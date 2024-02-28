@@ -5,7 +5,7 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-use crab_os::{print, println};
+use crab_os::println;
 
 #[cfg(not(test))]
 #[panic_handler]

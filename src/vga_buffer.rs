@@ -130,7 +130,7 @@ lazy_static! {
 #[macro_export] // available to the whole crate
 macro_rules! println  {
     () => ($crate::print!("\n"));
-    ($($arg:tt)*) => (print!("{}\n", format_args!($($arg)*)));
+    ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
 }
 
 #[macro_export]
