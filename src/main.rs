@@ -27,11 +27,6 @@ pub extern "C" fn _start() -> ! {
 
     crab_os::init();
 
-    fn stack_overflow() {
-        stack_overflow();
-    }
-    stack_overflow(); // triggers a stack overflow
-
     #[cfg(test)]
     test_main();
 
