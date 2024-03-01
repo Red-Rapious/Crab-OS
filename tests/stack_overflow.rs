@@ -3,10 +3,10 @@
 #![feature(abi_x86_interrupt)]
 
 use core::panic::PanicInfo;
-use crab_os::{exit_qemu, serial_println, serial_print, QemuExitCode};
-use x86_64::structures::idt::InterruptStackFrame;
-use x86_64::structures::idt::InterruptDescriptorTable;
+use crab_os::{exit_qemu, serial_print, serial_println, QemuExitCode};
 use lazy_static::lazy_static;
+use x86_64::structures::idt::InterruptDescriptorTable;
+use x86_64::structures::idt::InterruptStackFrame;
 
 lazy_static! {
     static ref TEST_IDT: InterruptDescriptorTable = {

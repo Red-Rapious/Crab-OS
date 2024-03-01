@@ -1,7 +1,7 @@
 use core::fmt;
 use lazy_static::lazy_static;
-use volatile::Volatile;
 use spin::Mutex;
+use volatile::Volatile;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -164,13 +164,13 @@ fn test_println_many() {
 fn test_println_output() {
     use core::fmt::Write;
     use x86_64::instructions::interrupts;
-    
+
     let s = "A string short enough to fit on a line";
     interrupts::without_interrupts(|| {
         let mut writer = WRITER.lock();
         writeln!(writer, "\n{}", s).expect("writeln failed");
         for (i, c) in s.chars().enumerate() {
-            let screen_char = writer.buffer.chars[BUFFER_HEIGHT-2][i].read();
+            let screen_char = writer.buffer.chars[BUFFER_HEIGHT - 2][i].read();
             assert_eq!(char::from(screen_char.ascii_character), c);
         }
     });

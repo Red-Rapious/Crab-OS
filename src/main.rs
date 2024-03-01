@@ -11,7 +11,7 @@ use crab_os::println;
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
+    crab_os::hlt_loop();
 }
 
 #[cfg(test)]
@@ -19,7 +19,6 @@ fn panic(info: &PanicInfo) -> ! {
 fn panic(info: &PanicInfo) -> ! {
     crab_os::test_panic_handler(info)
 }
-
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -31,7 +30,7 @@ pub extern "C" fn _start() -> ! {
     test_main();
 
     println!("It did not crash!");
-    loop {}
+    crab_os::hlt_loop();
 }
 
 #[test_case]
