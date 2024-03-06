@@ -6,7 +6,7 @@
 
 extern crate alloc;
 
-use alloc::{boxed::Box, vec, vec::Vec, rc::Rc};
+use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use crab_os::{
@@ -54,9 +54,15 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
 
     let reference_counted = Rc::new(vec![1, 2, 3]);
     let clone_reference = reference_counted.clone();
-    println!("current reference count is {}", Rc::strong_count(&clone_reference));
+    println!(
+        "current reference count is {}",
+        Rc::strong_count(&clone_reference)
+    );
     core::mem::drop(reference_counted);
-    println!("reference count is {} now", Rc::strong_count(&clone_reference));
+    println!(
+        "reference count is {} now",
+        Rc::strong_count(&clone_reference)
+    );
 
     #[cfg(test)]
     test_main();

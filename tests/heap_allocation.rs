@@ -6,9 +6,9 @@
 
 extern crate alloc;
 
+use alloc::{boxed::Box, vec::Vec};
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
-use alloc::{vec::Vec, boxed::Box};
 use crab_os::allocator::HEAP_SIZE;
 
 entry_point!(main);
@@ -21,12 +21,9 @@ fn main(boot_info: &'static BootInfo) -> ! {
     crab_os::init();
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
-    let mut frame_allocator = unsafe {
-        BootInfoFrameAllocator::init(&boot_info.memory_map)
-    };
+    let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
 
-    allocator::init_heap(&mut mapper, &mut frame_allocator)
-        .expect("heap initialization failed");
+    allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
     test_main();
     loop {}
@@ -42,12 +39,12 @@ fn simple_allocation() {
 
 #[test_case]
 fn large_vec() {
-    let n =100;
+    let n = 100;
     let mut vec = Vec::new();
     for i in 0..n {
         vec.push(i);
     }
-    assert_eq!(vec.iter().sum::<u64>(), (n-1)*n/2)
+    assert_eq!(vec.iter().sum::<u64>(), (n - 1) * n / 2)
 }
 
 #[test_case]
@@ -61,4 +58,14 @@ fn many_boxes() {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     crab_os::test_panic_handler(info)
+}
+
+#[test_case]
+fn many_boxes_long_lived() {
+    let long_lived = Box::new(1);
+    for i in 0..HEAP_SIZE {
+        let x = Box::new(i);
+        assert_eq!(*x, i);
+    }
+    assert_eq!(*long_lived, 1);
 }
