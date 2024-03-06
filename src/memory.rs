@@ -1,10 +1,9 @@
 use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
-use x86_64::PhysAddr;
-use x86_64::{
-    structures::paging::PageTable,
-    VirtAddr,
+use x86_64::structures::paging::{
+    FrameAllocator, Mapper, OffsetPageTable, Page, PhysFrame, Size4KiB,
 };
-use x86_64::structures::paging::{FrameAllocator, Mapper, OffsetPageTable, Page, PhysFrame, Size4KiB};
+use x86_64::PhysAddr;
+use x86_64::{structures::paging::PageTable, VirtAddr};
 
 unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static mut PageTable {
     use x86_64::registers::control::Cr3;
@@ -69,26 +68,24 @@ unsafe impl FrameAllocator<Size4KiB> for EmptyFrameAllocator {
 
 pub struct BootInfoFrameAllocator {
     memory_map: &'static MemoryMap,
-    next: usize
+    next: usize,
 }
 
 impl BootInfoFrameAllocator {
     pub unsafe fn init(memory_map: &'static MemoryMap) -> Self {
         BootInfoFrameAllocator {
             memory_map,
-            next: 0
+            next: 0,
         }
     }
 
     fn usable_frames(&self) -> impl Iterator<Item = PhysFrame> {
         // Get usable regions from memory map
         let regions = self.memory_map.iter();
-        let usable_regions = regions
-            .filter(|r| r.region_type == MemoryRegionType::Usable);
+        let usable_regions = regions.filter(|r| r.region_type == MemoryRegionType::Usable);
 
         // Map each region to its address range
-        let addr_ranges = usable_regions
-            .map(|r| r.range.start_addr()..r.range.end_addr());
+        let addr_ranges = usable_regions.map(|r| r.range.start_addr()..r.range.end_addr());
 
         // Transform to an interator of frame start addresses
         let frame_addresses = addr_ranges.flat_map(|r| r.step_by(4096));
@@ -108,7 +105,7 @@ unsafe impl FrameAllocator<Size4KiB> for BootInfoFrameAllocator {
 pub fn create_example_mapping(
     page: Page,
     mapper: &mut OffsetPageTable,
-    frame_allocator: &mut impl FrameAllocator<Size4KiB>
+    frame_allocator: &mut impl FrameAllocator<Size4KiB>,
 ) {
     use x86_64::structures::paging::PageTableFlags as Flags;
 
