@@ -12,7 +12,7 @@ use core::panic::PanicInfo;
 use crab_os::{
     allocator,
     memory::{self, BootInfoFrameAllocator},
-    print, println,
+    println,
 };
 
 entry_point!(kernel_main);

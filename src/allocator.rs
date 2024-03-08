@@ -2,12 +2,6 @@ pub mod bump;
 pub mod fixed_size_block;
 pub mod linked_list;
 
-use core::{
-    alloc::{GlobalAlloc, Layout},
-    ptr::null_mut,
-};
-
-use bump::BumpAllocator;
 //use linked_list_allocator::LockedHeap;
 use x86_64::structures::paging::Page;
 use x86_64::{
@@ -15,7 +9,7 @@ use x86_64::{
     VirtAddr,
 };
 
-use self::{fixed_size_block::FixedSizeBlockAllocator, linked_list::LinkedListAllocator};
+use self::fixed_size_block::FixedSizeBlockAllocator;
 
 pub const HEAP_START: usize = 0x_4444_4444_0000;
 pub const HEAP_SIZE: usize = 100 * 1024; // 100 KiB

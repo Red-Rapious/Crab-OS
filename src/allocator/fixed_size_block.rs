@@ -73,7 +73,7 @@ unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
         match list_index(&layout) {
             Some(index) => {
                 let new_node = ListNode {
-                    next: allocator.list_heads[index].take()
+                    next: allocator.list_heads[index].take(),
                 };
 
                 assert!(mem::size_of::<ListNode>() <= BLOCK_SIZES[index]);

@@ -84,8 +84,6 @@ pub fn hlt_loop() -> ! {
 
 #[cfg(test)]
 fn kernel_main(_boot_info: &'static BootInfo) -> ! {
-    use bootloader::BootInfo;
-
     init();
     test_main();
     hlt_loop();
